@@ -22,7 +22,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
   dns_prefix          = "aks-spoke"
 
   identity {
-    type         = "SystemAssigned, UserAssigned"
+    type         = "UserAssigned"
     identity_ids = [azurerm_user_assigned_identity.aks_uai.id]
   }
 
@@ -95,21 +95,15 @@ resource "azurerm_role_assignment" "uami_roles" {
 }
 
 # Attach ACR to AKS (role assignment)
-# resource "azurerm_role_assignment" "aks_acr_pull" {
-#   scope                = var.acr_id
-#   role_definition_name = "AcrPull"
-#   principal_id         = azurerm_user_assigned_identity.aks_uai.principal_id
-# }
+resource "azurerm_role_assignment" "aks_acr_pull" {
+  scope                = var.acr_id
+  role_definition_name = "AcrPull"
+  principal_id         = azurerm_user_assigned_identity.aks_uai.principal_id
+}
 
 # Allow AKS to access Key Vault
 resource "azurerm_role_assignment" "aks_kv_secrets_user" {
   scope                = var.keyvault_id
   role_definition_name = "Key Vault Secrets User"
   principal_id         = azurerm_user_assigned_identity.aks_uai.principal_id
-}
-
-resource "azurerm_role_assignment" "acr_pull_sys" {
-  scope                = var.acr_id
-  role_definition_name = "AcrPull"
-  principal_id         = azurerm_kubernetes_cluster.aks.kubelet_identity[0].object_id
 }
