@@ -1,0 +1,6 @@
+replicaCount: 1
+image:
+  repository: platformacr001.azurecr.io/app-gateway
+  tag: v1
+service:
+  port: 8000
