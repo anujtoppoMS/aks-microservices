@@ -8,3 +8,4 @@ image:
   tag: v1
 service:
   port: 8001
+  targetPort: 8000
