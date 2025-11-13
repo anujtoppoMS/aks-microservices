@@ -108,7 +108,7 @@ resource "azurerm_role_assignment" "aks_kv_secrets_user" {
   principal_id         = azurerm_user_assigned_identity.aks_uai.principal_id
 }
 
-resource "azurerm_role_assignment" "aks_acr_pull" {
+resource "azurerm_role_assignment" "acr_pull_sys" {
   scope                = var.acr_id
   role_definition_name = "AcrPull"
   principal_id         = azurerm_kubernetes_cluster.aks.kubelet_identity[0].object_id
