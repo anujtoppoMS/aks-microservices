@@ -2,6 +2,7 @@ name: Deploy app with Helm Chart
 
 on:
   workflow_call:
+  workflow_dispatch:
 
 jobs:
   deploy:
