@@ -35,13 +35,10 @@ jobs:
           docker compose build
 
       - name: Tag and Push images to ACR
+        working-directory: ./aks-microservices/app
         run: |
-          # Example: push a service named "web"
-          IMAGE_NAME=${{ secrets.ACR_LOGIN_SERVER }}/web:latest
-          docker tag web:latest $IMAGE_NAME
-          docker push $IMAGE_NAME
 
-          # Tag and push billing image
+            # Tag and push billing image
             container_name=$(docker images --format "{{.Repository}}:{{.Tag}}" | grep -i app-gateway)
             docker tag $container_name ${{ secrets.ACR_LOGIN_SERVER }}/app-gateway:v1
             docker push ${{ secrets.ACR_LOGIN_SERVER }}/app-gateway:v1
