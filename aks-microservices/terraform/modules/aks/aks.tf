@@ -22,7 +22,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
   dns_prefix          = "aks-spoke"
 
   identity {
-    type         = "UserAssigned, SystemAssigned"
+    type         = "SystemAssigned, UserAssigned"
     identity_ids = [azurerm_user_assigned_identity.aks_uai.id]
   }
 
