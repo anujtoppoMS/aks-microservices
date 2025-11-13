@@ -25,10 +25,10 @@ jobs:
 
       - name: Run Checkov scan
         run: checkov -d . --framework terraform --output cli
-        
+
       - name: Save Checkov report
         if: always()
-        run: checkov -d . --framework terraform --output json > checkov_report.json
+        run: checkov -d . --framework terraform --output json --download-external-modules true > checkov_report.json
 
       - name: Upload Checkov report
         if: always()
