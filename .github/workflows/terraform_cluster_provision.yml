@@ -51,7 +51,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: tfplan
-          path: tfplan
+          path: ./aks-microservices/terraform/envs/prod/tfplan
 
   apply:
     name: Terraform Apply
@@ -73,6 +73,10 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: tfplan
+
+      - name: Move Plan To Working Directory
+        run: |
+            mv tfplan ./aks-microservices/terraform/envs/prod/
 
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan
