@@ -4,12 +4,14 @@ metadata:
   name: {{ .Chart.Name }}
   labels:
     app: {{ .Chart.Name }}
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "{{ .Values.service.port }}"
+    prometheus.io/path: "/metrics"
 spec:
-  template:
-    metadata:
-      labels:
-        app: {{ .Chart.Name }}
-      annotations:
-        prometheus.io/scrape: "true"
-        prometheus.io/port: "{{ .Values.service.port }}"
-        prometheus.io/path: "/metrics"
+  selector:
+    app: {{ .Chart.Name }}
+  ports:
+    - name: http
+      port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.port }}

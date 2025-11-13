@@ -3,4 +3,4 @@ image:
   repository: platformacr001.azurecr.io/app-order-service
   tag: v1
 service:
-  port: 8000
+  port: 8002
