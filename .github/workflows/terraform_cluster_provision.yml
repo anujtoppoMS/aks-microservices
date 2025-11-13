@@ -21,7 +21,8 @@ jobs:
           cli_config_credentials_token: ${{ secrets.TFC_TOKEN }}
 
       - name: Terraform Init
-        run: terraform init -backend-config="workspace=${{ github.ref_name }}"
+        run: terraform init #-backend-config="workspace=${{ github.ref_name }}"
+        working-directory: ./aks-microservices/terraform/envs/prod
 
       - name: Terraform Validate
         run: terraform validate
@@ -39,7 +40,8 @@ jobs:
           cli_config_credentials_token: ${{ secrets.TFC_TOKEN }}
 
       - name: Terraform Init
-        run: terraform init -backend-config="workspace=${{ github.ref_name }}"
+        run: terraform init #-backend-config="workspace=${{ github.ref_name }}"
+        working-directory: ./aks-microservices/terraform/envs/prod
 
       - name: Terraform Plan
         run: terraform plan -out=tfplan
@@ -73,3 +75,4 @@ jobs:
 
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan
+        working-directory: ./aks-microservices/terraform/envs/prod
