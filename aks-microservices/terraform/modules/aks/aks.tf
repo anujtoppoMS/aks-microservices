@@ -95,11 +95,11 @@ resource "azurerm_role_assignment" "uami_roles" {
 }
 
 # Attach ACR to AKS (role assignment)
-resource "azurerm_role_assignment" "aks_acr_pull" {
-  scope                = var.acr_id
-  role_definition_name = "AcrPull"
-  principal_id         = azurerm_user_assigned_identity.aks_uai.principal_id
-}
+# resource "azurerm_role_assignment" "aks_acr_pull" {
+#   scope                = var.acr_id
+#   role_definition_name = "AcrPull"
+#   principal_id         = azurerm_user_assigned_identity.aks_uai.principal_id
+# }
 
 # Allow AKS to access Key Vault
 resource "azurerm_role_assignment" "aks_kv_secrets_user" {
