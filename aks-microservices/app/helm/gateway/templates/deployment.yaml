@@ -10,8 +10,11 @@ spec:
     matchLabels:
       app: {{ .Chart.Name }}
   tolerations:
-  - key: {{ .Values.tolerations.key }}
-    operator: {{ .Values.tolerations.operator }}
+{{- range .Values.tolerations }}
+    - key: {{ .key | quote }}
+      operator: {{ .operator | quote }}
+      value: {{ .value | quote }}
+{{- end }}
   template:
     metadata:
       labels:
