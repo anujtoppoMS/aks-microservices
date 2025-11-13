@@ -79,5 +79,7 @@ jobs:
             mv tfplan ./aks-microservices/terraform/envs/prod/
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve tfplan
+        run: |
+          terraform init
+          terraform apply -auto-approve tfplan
         working-directory: ./aks-microservices/terraform/envs/prod
