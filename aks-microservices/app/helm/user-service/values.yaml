@@ -1,6 +1,6 @@
 replicaCount: 1
 image:
-  repository: platformacr001.azurecr.io/app-order-service
+  repository: platformacr001.azurecr.io/app-user-service
   tag: v1
 service:
   port: 8000
