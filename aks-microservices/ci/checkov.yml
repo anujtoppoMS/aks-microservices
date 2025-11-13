@@ -1,0 +1,37 @@
+# .github/workflows/checkov-reusable.yml
+name: Terraform Security Scan with Checkov
+
+on:
+  workflow_call:
+
+jobs:
+  checkov-scan:
+    name: Run Checkov on Terraform
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install Checkov
+        run: pip install checkov
+
+      - name: Run Checkov scan
+        run: checkov -d . --framework terraform --output cli
+
+      # Optional: Upload results as artifact
+      - name: Save Checkov report
+        if: always()
+        run: checkov -d . --framework terraform --output json > checkov_report.json
+
+      - name: Upload Checkov report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: checkov-report
+          path: checkov_report.json
