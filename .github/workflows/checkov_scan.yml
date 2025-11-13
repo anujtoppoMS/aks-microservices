@@ -17,4 +17,4 @@ on:
 jobs:
   # This workflow contains a single job called "build"
   call_checkov:
-    uses: ./aks-microservices/ci/checkov.yml
+    uses: anujtoppoMS/aks-microservices/aks-microservices/ci/checkov.yml
