@@ -2,6 +2,7 @@ replicaCount: 1
 tolerations:
   - key: "CriticalAddonsOnly"
     operator: "Exists"
+    effect: "NoSchedule"
 image:
   repository: platformacr001.azurecr.io/app-gateway
   tag: v1
