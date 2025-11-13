@@ -1,0 +1,57 @@
+name: Build and Push
+
+on:
+  workflow_call:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write   # required for OIDC
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Azure Login via OIDC
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.ACRAKS_CLIENTID }}
+          tenant-id: ${{ secrets.TENANT_ID }}
+          subscription-id: ${{ secrets.SUBSCRIPTION_ID }}
+
+
+      - name: Azure Container Registry Login
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ secrets.ACR_LOGIN_SERVER }}
+          client-id: ${{ secrets.ACRAKS_CLIENTID }}
+          tenant-id: ${{ secrets.TENANT_ID }}
+          subscription-id: ${{ secrets.SUBSCRIPTION_ID }}
+
+      - name: Build Docker Compose images
+        run: |
+          docker compose build
+
+      - name: Tag and Push images to ACR
+        run: |
+          # Example: push a service named "web"
+          IMAGE_NAME=${{ secrets.ACR_LOGIN_SERVER }}/web:latest
+          docker tag web:latest $IMAGE_NAME
+          docker push $IMAGE_NAME
+
+          # Tag and push billing image
+            container_name=$(docker images --format "{{.Repository}}:{{.Tag}}" | grep -i app-gateway)
+            docker tag $container_name ${{ secrets.ACR_LOGIN_SERVER }}/app-gateway:v1
+            docker push ${{ secrets.ACR_LOGIN_SERVER }}/app-gateway:v1
+
+            # Tag and push proxy image
+            container_name=$(docker images --format "{{.Repository}}:{{.Tag}}" | grep -i app-order-service)
+            docker tag $container_name ${{ secrets.ACR_LOGIN_SERVER }}/app-order-service:v1
+            docker push ${{ secrets.ACR_LOGIN_SERVER }}/app-order-service:v1
+
+            # Tag and push proxy image
+            container_name=$(docker images --format "{{.Repository}}:{{.Tag}}" | grep -i app-user-service)
+            docker tag $container_name ${{ secrets.ACR_LOGIN_SERVER }}/app-user-service:v1
+            docker push ${{ secrets.ACR_LOGIN_SERVER }}/app-user-service:v1
