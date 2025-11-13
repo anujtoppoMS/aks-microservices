@@ -2,11 +2,11 @@ name: Terraform CI/CD
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
-      - staging
-      - dev
+#   push:
+#     branches:
+#       - main
+#       - staging
+#       - dev
 
 jobs:
   validate:
