@@ -4,7 +4,6 @@ variable "location" {
      }
 variable "rg_name"  { 
     type = string  
-    default = "rg-example" 
     }
 
 variable "name"  { 

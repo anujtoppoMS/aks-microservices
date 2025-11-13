@@ -1,7 +1,7 @@
 variable "resource_groups" {
   default = {
     rg_hub               = { location = "eastus" }
-    rg_aks_spoke         = { location = "westus" }
+    rg_aks_spoke         = { location = "eastus" }
     rg_acr               = { location = "eastus" }
     rg_keyvault          = { location = "eastus" }
     rg_aks_microservices = { location = "eastus" }
