@@ -3,7 +3,7 @@ module "rg" {
   source   = "git::https://github.com/anujtoppoMS/aks-microservices.git//aks-microservices/terraform/modules/resource_group?ref=main"
   for_each = var.resource_groups
 
-  name     = each.key
+  rg_name  = each.key
   location = each.value.location
 }
 
