@@ -1,11 +1,11 @@
 # Log Analytics for AKS monitoring
-resource "azurerm_log_analytics_workspace" "law" {
-  name                = "law-aks-hubspoke"
-  location            = var.location
-  resource_group_name = var.resource_group_name
-  sku                 = "PerGB2018"
-  retention_in_days   = 30
-}
+# resource "azurerm_log_analytics_workspace" "law" {
+#   name                = "law-aks-hubspoke"
+#   location            = var.location
+#   resource_group_name = var.resource_group_name
+#   sku                 = "PerGB2018"
+#   retention_in_days   = 30
+# }
 
 # Managed Identity for AKS
 resource "azurerm_user_assigned_identity" "aks_uai" {
@@ -22,7 +22,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
   dns_prefix          = "aks-spoke"
 
   identity {
-    type         = "UserAssigned"
+    type         = "UserAssigned, SystemAssigned"
     identity_ids = [azurerm_user_assigned_identity.aks_uai.id]
   }
 
@@ -48,9 +48,9 @@ resource "azurerm_kubernetes_cluster" "aks" {
     # docker_bridge_cidr = "172.17.0.1/16"
   }
 
-  oms_agent {
-    log_analytics_workspace_id = azurerm_log_analytics_workspace.law.id
-  }
+  # oms_agent {
+  #   log_analytics_workspace_id = azurerm_log_analytics_workspace.law.id
+  # }
 }
 
 # resource "azurerm_kubernetes_cluster_node_pool" "usernp" {
@@ -106,4 +106,10 @@ resource "azurerm_role_assignment" "aks_kv_secrets_user" {
   scope                = var.keyvault_id
   role_definition_name = "Key Vault Secrets User"
   principal_id         = azurerm_user_assigned_identity.aks_uai.principal_id
+}
+
+resource "azurerm_role_assignment" "aks_acr_pull" {
+  scope                = var.acr_id
+  role_definition_name = "AcrPull"
+  principal_id         = azurerm_kubernetes_cluster.aks.kubelet_identity[0].object_id
 }
