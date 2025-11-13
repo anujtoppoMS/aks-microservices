@@ -1,0 +1,29 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: grafana-daily-report
+  namespace: monitoring
+spec:
+  schedule: "0 7 * * *"   # every day at 7 AM
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: reporter
+            image: curlimages/curl
+            command:
+            - /bin/sh
+            - -c
+            - |
+              curl -u admin:${GRAFANA_PASSWORD} \
+                "http://monitoring-grafana.monitoring.svc.cluster.local:80/render/d-solo/<dashboard_uid>/<panel_id>?orgId=1&width=1400&height=800" \
+                -o /tmp/report.png
+              # Example: upload to S3/Azure Blob/email
+            env:
+            - name: GRAFANA_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: grafana-auth
+                  key: password
+          restartPolicy: OnFailure
