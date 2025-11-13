@@ -22,20 +22,16 @@ jobs:
           subscription-id: ${{ secrets.SUBSCRIPTION_ID }}
 
 
-      - name: Azure Container Registry Login
-        uses: azure/docker-login@v1
-        with:
-          login-server: ${{ secrets.ACR_LOGIN_SERVER }}
-          client-id: ${{ secrets.ACRAKS_CLIENTID }}
-          tenant-id: ${{ secrets.TENANT_ID }}
-          subscription-id: ${{ secrets.SUBSCRIPTION_ID }}
+      - name: ACR Login
+        run: |
+            az acr login --name ${{ secrets.ACR_NAME }}
 
       - name: Build Docker Compose images
+        working-directory: ./aks-microservices/app
         run: |
           docker compose build
 
       - name: Tag and Push images to ACR
-        working-directory: ./aks-microservices/app
         run: |
 
             # Tag and push billing image
