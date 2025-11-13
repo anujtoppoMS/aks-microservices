@@ -1,0 +1,24 @@
+version: "3.8"
+services:
+  user-service:
+    build: ./user_service
+    ports:
+      - "8001:8000"
+
+  order-service:
+    build: ./order_service
+    ports:
+      - "8002:8000"
+    depends_on:
+      - user-service
+
+  gateway:
+    build: ./gateway
+    ports:
+      - "8000:8000"
+    depends_on:
+      - user-service
+      - order-service
+    command: >
+      sh -c "python manage.py migrate &&
+             gunicorn gateway.wsgi:application --bind 0.0.0.0:8000"
