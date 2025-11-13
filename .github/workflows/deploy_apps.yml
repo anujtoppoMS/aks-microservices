@@ -36,6 +36,13 @@ jobs:
       - name: Deploy My App Helm Chart
         working-directory: ./aks-microservices/app/
         run: |
-            helm install user-service ./helm/user-service
+            helm upgrade --install user-service ./helm/user-service \
+            --namespace micro-app --create-namespace
+            helm upgrade --install order-service ./helm/order-service \
+            --namespace micro-app
+            helm upgrade --install gateway ./helm/gateway \
+            --namespace micro-app
+
+        # helm install user-service ./helm/user-service
         # helm install order-service ./helm/order-service
         # helm install gateway ./helm/gateway
