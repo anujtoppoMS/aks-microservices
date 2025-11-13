@@ -12,6 +12,9 @@ resource "azurerm_subnet" "spoke_aks_nodepool_subnet" {
   resource_group_name  = var.resource_group_name
   virtual_network_name = azurerm_virtual_network.spoke_vnet.name
   address_prefixes     = [var.spoke_aks_node_cidr]
+  service_endpoints = [
+    "Microsoft.KeyVault"
+  ]
 }
 
 # Optional: node pool subnet

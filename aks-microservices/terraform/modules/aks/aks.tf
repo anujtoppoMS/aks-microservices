@@ -54,17 +54,32 @@ resource "azurerm_kubernetes_cluster" "aks" {
 }
 
 # Role assignments for subnet permissions
-resource "azurerm_role_assignment" "aks_subnet_contributor" {
-  scope                = var.subnet_ids["spoke_aks_subnet_id"]
-  role_definition_name = "Network Contributor"
-  principal_id         = azurerm_user_assigned_identity.aks_uai.principal_id
-}
+# resource "azurerm_role_assignment" "aks_subnet_contributor" {
+#   scope                = var.subnet_ids["spoke_aks_subnet_id"]
+#   role_definition_name = "Network Contributor"
+#   principal_id         = azurerm_user_assigned_identity.aks_uai.principal_id
+# }
 
 # resource "azurerm_role_assignment" "aks_nodes_subnet_contributor" {
 #   scope                = module.networking.spoke_nodes_subnet_id
 #   role_definition_name = "Network Contributor"
 #   principal_id         = azurerm_user_assigned_identity.aks_uai.principal_id
 # }
+
+# Assign multiple roles to the UAMI at subnet scope
+locals {
+  roles = [
+    "Network Contributor",
+    "User Access Administrator"
+  ]
+}
+
+resource "azurerm_role_assignment" "uami_roles" {
+  for_each            = toset(local.roles)
+  scope               = var.subnet_ids["spoke_aks_subnet_id"]
+  role_definition_name = each.key
+  principal_id        = azurerm_user_assigned_identity.aks_uai.principal_id
+}
 
 # Attach ACR to AKS (role assignment)
 resource "azurerm_role_assignment" "aks_acr_pull" {
