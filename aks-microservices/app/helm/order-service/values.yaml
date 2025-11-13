@@ -1,4 +1,7 @@
 replicaCount: 1
+tolerations:
+  - key: "CriticalAddonsOnly"
+    operator: "Exists"
 image:
   repository: platformacr001.azurecr.io/app-order-service
   tag: v1

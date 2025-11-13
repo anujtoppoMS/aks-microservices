@@ -9,6 +9,9 @@ spec:
   selector:
     matchLabels:
       app: {{ .Chart.Name }}
+  tolerations:
+  - key: {{ .Values.tolerations.key }}
+    operator: {{ .Values.tolerations.operator }}
   template:
     metadata:
       labels:
