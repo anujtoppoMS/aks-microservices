@@ -12,7 +12,7 @@ class Order(BaseModel):
 orders = []
 
 # URL of the User Service (adjust for your deployment)
-USER_SERVICE_URL = "http://user-service:8000/users"
+USER_SERVICE_URL = "http://user-service:8001/users"
 
 @app.post("/orders")
 def create_order(order: Order):

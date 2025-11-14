@@ -1,7 +1,7 @@
 import requests
 from django.shortcuts import render
 
-ORDER_SERVICE = "http://order-service:8000/orders"
+ORDER_SERVICE = "http://order-service:8002/orders"
 
 def list_orders(request):
     resp = requests.get(ORDER_SERVICE)
