@@ -24,11 +24,11 @@ jobs:
         run: pip install checkov
 
       - name: Run Checkov scan
-        run: checkov -d . --framework terraform --output json --download-external-modules true
+        run: checkov -d . --framework terraform --output json --download-external-modules false
 
       - name: Save Checkov report
         if: always()
-        run: checkov -d . --framework terraform --output json --download-external-modules true > checkov_report.json
+        run: checkov -d . --framework terraform --output json --download-external-modules false > checkov_report.json
 
       - name: Upload Checkov report
         if: always()
