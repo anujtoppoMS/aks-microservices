@@ -27,11 +27,11 @@ jobs:
         run: ls -R $GITHUB_WORKSPACE
 
       - name: Run Checkov scan
-        run: checkov -d $GITHUB_WORKSPACE/terraform/envs/prod --framework terraform --output json --download-external-modules false
+        run: checkov -d $GITHUB_WORKSPACE/aks-microservices/terraform/envs/prod --framework terraform --output json --download-external-modules false
 
       - name: Save Checkov report
         if: always()
-        run: checkov -d $GITHUB_WORKSPACE/terraform/envs/prod --framework terraform --output json --download-external-modules false > checkov_report.json
+        run: checkov -d $GITHUB_WORKSPACE/aks-microservices/terraform/envs/prod --framework terraform --output json --download-external-modules false > checkov_report.json
 
       - name: Upload Checkov report
         if: always()
