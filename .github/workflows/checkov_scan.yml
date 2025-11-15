@@ -24,6 +24,7 @@ jobs:
         run: pip install checkov
 
       - name: Run Checkov scan
+        working-directory: ./aks-microservices/terraform/envs/prod
         run: checkov -d . --framework terraform --output json --download-external-modules false
 
       - name: Save Checkov report
