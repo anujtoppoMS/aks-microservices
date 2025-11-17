@@ -1,6 +1,6 @@
 
 module "rg" {
-  source   = "git::https://github.com/anujtoppoMS/aks-microservices.git//aks-microservices/terraform/modules/resource_group?ref=144a19375de6c0d2ba187257fea9e3f2530cc736"
+  source   = "git::https://github.com/anujtoppoMS/aks-microservices.git//aks-microservices/terraform/modules/resource_group?ref=main"
   for_each = var.resource_groups
 
   rg_name  = each.key
@@ -10,7 +10,7 @@ module "rg" {
 
 #networking hub
 module "hub" {
-  source              = "git::https://github.com/anujtoppoMS/aks-microservices.git//aks-microservices/terraform/modules/networking/hub?ref=144a19375de6c0d2ba187257fea9e3f2530cc736"
+  source              = "git::https://github.com/anujtoppoMS/aks-microservices.git//aks-microservices/terraform/modules/networking/hub?ref=main"
   resource_group_name = module.rg["rg_hub"].name
   location            = module.rg["rg_hub"].location
   spoke_vnet_id       = module.spoke.spoke_vnet_id
@@ -18,7 +18,7 @@ module "hub" {
 
 #networking aks spoke
 module "spoke" {
-  source              = "git::https://github.com/anujtoppoMS/aks-microservices.git//aks-microservices/terraform/modules/networking/spoke?ref=144a19375de6c0d2ba187257fea9e3f2530cc736"
+  source              = "git::https://github.com/anujtoppoMS/aks-microservices.git//aks-microservices/terraform/modules/networking/spoke?ref=main"
   resource_group_name = module.rg["rg_aks_spoke"].name
   location            = module.rg["rg_aks_spoke"].location
   hub_vnet_id         = module.hub.hub_vnet_id
@@ -26,7 +26,7 @@ module "spoke" {
 
 # ACR attached to the AKS
 module "acr" {
-  source              = "git::https://github.com/anujtoppoMS/aks-microservices.git//aks-microservices/terraform/modules/acr?ref=144a19375de6c0d2ba187257fea9e3f2530cc736"
+  source              = "git::https://github.com/anujtoppoMS/aks-microservices.git//aks-microservices/terraform/modules/acr?ref=main"
   resource_group_name = module.rg["rg_acr"].name
   location            = module.rg["rg_acr"].location
   acr_name            = "peerisland-asses-acr"
