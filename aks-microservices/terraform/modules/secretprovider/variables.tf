@@ -14,8 +14,3 @@ variable "azure_tenant_id" {
 #     cluster_ca_certificate = string
 #   })
 # }
-
-variable "host" {}
-variable "client_certificate" {}
-variable "client_key" {}
-variable "cluster_ca_certificate" {}
