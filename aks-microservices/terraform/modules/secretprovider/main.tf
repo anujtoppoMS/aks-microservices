@@ -1,7 +1,3 @@
-provider "helm" {
-  alias = "aks"
-}
-
 resource "helm_release" "csi_driver" {
   name       = "csi-secrets-store"
   repository = "https://kubernetes-sigs.github.io/secrets-store-csi-driver/charts"
