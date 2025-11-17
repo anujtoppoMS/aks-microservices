@@ -66,7 +66,7 @@ provider "helm" {
 }
 
 module "secretprovider" {
-  source            = "git::https://github.com/anujtoppoMS/aks-microservices.git//aks-microservices/terraform/modules/secretprovider?ref=144a19375de6c0d2ba187257fea9e3f2530cc736"
+  source            = "git::https://github.com/anujtoppoMS/aks-microservices.git//aks-microservices/terraform/modules/secretprovider?ref=main"
   azure_tenant_id   = data.azurerm_client_config.current.tenant_id
   aks_uai_client_id = module.aks.aks_uai_client_id
 }
