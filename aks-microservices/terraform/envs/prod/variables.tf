@@ -13,11 +13,11 @@ variable "subscription_id" {
   default = "6c5ab08a-38e2-49b5-a0f0-b7c78bbbea6d"
 }
 
-variable "kube_config" {
-  type = object({
-    host                   = string
-    client_certificate     = string
-    client_key             = string
-    cluster_ca_certificate = string
-  })
-}
+# variable "kube_config" {
+#   type = object({
+#     host                   = string
+#     client_certificate     = string
+#     client_key             = string
+#     cluster_ca_certificate = string
+#   })
+# }

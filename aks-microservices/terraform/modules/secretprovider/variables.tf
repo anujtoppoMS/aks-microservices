@@ -5,3 +5,17 @@ variable "aks_uai_client_id" {
 variable "azure_tenant_id" {
   type = string
 }
+
+# variable "kube_config" {
+#   type = object({
+#     host                   = string
+#     client_certificate     = string
+#     client_key             = string
+#     cluster_ca_certificate = string
+#   })
+# }
+
+variable "host" {}
+variable "client_certificate" {}
+variable "client_key" {}
+variable "cluster_ca_certificate" {}

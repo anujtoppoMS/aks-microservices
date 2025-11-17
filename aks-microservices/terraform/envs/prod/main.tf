@@ -59,17 +59,12 @@ module "aks" {
   keyvault_id = module.keyvault.id
 }
 
-provider "helm" {
-  kubernetes = {
-    host                   = module.aks.kube_config.host
-    client_certificate     = base64decode(module.aks.kube_config.client_certificate)
-    client_key             = base64decode(module.aks.kube_config.client_key)
-    cluster_ca_certificate = base64decode(module.aks.kube_config.cluster_ca_certificate)
-  }
-}
-
 module "secretprovider" {
   source            = "git::https://github.com/anujtoppoMS/aks-microservices.git//aks-microservices/terraform/modules/secretprovider?ref=144a19375de6c0d2ba187257fea9e3f2530cc736"
   azure_tenant_id   = data.azurerm_client_config.current.tenant_id
   aks_uai_client_id = module.aks.aks_uai_client_id
+  host                   = module.aks.host
+  client_certificate     = module.aks.client_certificate
+  client_key             = module.aks.client_key
+  cluster_ca_certificate = module.aks.cluster_ca_certificate
 }
