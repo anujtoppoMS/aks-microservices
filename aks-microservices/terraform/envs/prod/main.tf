@@ -51,9 +51,25 @@ module "aks" {
   source              = "../../modules/aks"
   resource_group_name = module.rg["rg_aks_microservices"].name
   location            = module.rg["rg_aks_microservices"].location
+  k8s_namespace       = "micro-app"
   subnet_ids = {
     spoke_aks_subnet_id = module.spoke.spoke_aks_subnet_id
   }
   acr_id      = module.acr.id
   keyvault_id = module.keyvault.id
+}
+
+provider "helm" {
+  kubernetes = {
+    host                   = var.kube_config_cred.host
+    client_certificate     = base64decode(var.kube_config_cred.client_certificate)
+    client_key             = base64decode(var.kube_config_cred.client_key)
+    cluster_ca_certificate = base64decode(var.kube_config_cred.cluster_ca_certificate)
+  }
+}
+
+module "secretprovider" {
+  source = "../../modules/secretprovider"
+  azure_tenant_id = module.aks.azure_tenant_id
+  aks_uai_client_id = module.aks.aks_uai_client_id
 }

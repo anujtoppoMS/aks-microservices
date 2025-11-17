@@ -3,9 +3,21 @@ tolerations:
   - key: "CriticalAddonsOnly"
     operator: "Exists"
     effect: "NoSchedule"
+volumes:
+  - name: secrets-store-inline
+    csi:
+      driver: secrets-store.csi.k8s.io
+      readOnly: true
+      volumeAttributes:
+        secretProviderClass: "azure-kv-secrets"
+# Additional volumeMounts on the output Deployment definition.
 image:
   repository: platformacr001.azurecr.io/app-gateway
   tag: v1
+volumeMounts:
+      - name: secrets-store-inline
+        mountPath: "/mnt/secrets-store"
+        readOnly: true
 service:
   port: 8000
   targetPort: 8000

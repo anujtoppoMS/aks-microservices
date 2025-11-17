@@ -21,6 +21,8 @@ resource "azurerm_kubernetes_cluster" "aks" {
   resource_group_name = var.resource_group_name
   dns_prefix          = "aks-spoke"
 
+  oidc_issuer_enabled = true
+
   identity {
     type         = "UserAssigned"
     identity_ids = [azurerm_user_assigned_identity.aks_uai.id]
@@ -106,4 +108,14 @@ resource "azurerm_role_assignment" "aks_kv_secrets_user" {
   scope                = var.keyvault_id
   role_definition_name = "Key Vault Secrets User"
   principal_id         = azurerm_user_assigned_identity.aks_uai.principal_id
+}
+
+resource "azurerm_user_assigned_identity_federated_identity_credential" "aks_sa_binding" {
+  name                = "aks-sa-federated-cred"
+  resource_group_name = var.resource_group_name
+  user_assigned_identity_name = azurerm_user_assigned_identity.aks_uai.name
+
+  audience = ["api://AzureADTokenExchange"]
+  issuer   = azurerm_kubernetes_cluster.aks.oidc_issuer_url
+  subject  = "system:serviceaccount:${var.k8s_namespace}:default"
 }

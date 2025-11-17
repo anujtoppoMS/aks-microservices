@@ -1,4 +1,5 @@
 name: Terraform Security Scan with Checkov
+
 on:
   push:
     branches: [ "main" ]
@@ -23,8 +24,8 @@ jobs:
       - name: Install Checkov
         run: pip install checkov
 
-      - name: Debug workspace structure
-        run: ls -R $GITHUB_WORKSPACE
+      # - name: Debug workspace structure
+      #   run: ls -R $GITHUB_WORKSPACE
 
       - name: Run Checkov scan
         run: checkov -d $GITHUB_WORKSPACE/aks-microservices/terraform/envs/prod --framework terraform --output json --download-external-modules false
