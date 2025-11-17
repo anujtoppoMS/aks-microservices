@@ -13,32 +13,3 @@ resource "helm_release" "akv_provider" {
   version    = "1.4.0"
   namespace  = "kube-system"
 }
-
-# resource "kubernetes_manifest" "secret_provider_class" {
-#   manifest = {
-#     apiVersion = "secrets-store.csi.x-k8s.io/v1"
-#     kind       = "SecretProviderClass"
-#     metadata = {
-#       name      = "azure-kv-secrets"
-#       namespace = "default"
-#     }
-#     spec = {
-#       provider   = "azure"
-#       parameters = {
-#         useWorkloadIdentity = "true"
-#         keyvaultName        = "my-keyvault"
-#         tenantId            = var.azure_tenant_id
-#         clientId            = var.aks_uai_client_id
-#         objects             = <<EOT
-# array:
-#   - |
-#     objectName: django-secret-key
-#     objectType: secret
-#   - |
-#     objectName: allowed_hosts
-#     objectType: secret
-# EOT
-#       }
-#     }
-#   }
-# }
