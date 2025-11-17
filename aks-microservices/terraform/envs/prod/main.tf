@@ -69,7 +69,7 @@ provider "helm" {
 }
 
 module "secretprovider" {
-  source = "../../modules/secretprovider"
-  azure_tenant_id = module.aks.azure_tenant_id
+  source            = "../../modules/secretprovider"
+  azure_tenant_id   = var.azure_tenant_id
   aks_uai_client_id = module.aks.aks_uai_client_id
 }
