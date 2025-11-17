@@ -60,6 +60,7 @@ module "aks" {
 }
 
 provider "helm" {
+  alias = "aks"
   kubernetes = {
     config_raw = module.aks.kube_config_raw
   }
