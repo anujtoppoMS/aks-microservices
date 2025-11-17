@@ -1,7 +1,7 @@
-output "kube_config" {
-  value     = module.aks.kube_config_raw
-  sensitive = true
-}
+# output "kube_config" {
+#   value     = module.aks.kube_config[0]
+#   sensitive = true
+# }
 
 output "acr_login_server" {
   value = module.acr.acr_login_server

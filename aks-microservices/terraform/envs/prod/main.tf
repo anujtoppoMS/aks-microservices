@@ -1,6 +1,6 @@
 
 module "rg" {
-  source   = "../../modules/resource_group"
+  source   = "git::https://github.com/anujtoppoMS/aks-microservices.git//aks-microservices/terraform/modules/resource_group?ref=144a19375de6c0d2ba187257fea9e3f2530cc736"
   for_each = var.resource_groups
 
   rg_name  = each.key
@@ -10,7 +10,7 @@ module "rg" {
 
 #networking hub
 module "hub" {
-  source              = "../../modules/networking/hub"
+  source              = "git::https://github.com/anujtoppoMS/aks-microservices.git//aks-microservices/terraform/modules/networking/hub?ref=144a19375de6c0d2ba187257fea9e3f2530cc736"
   resource_group_name = module.rg["rg_hub"].name
   location            = module.rg["rg_hub"].location
   spoke_vnet_id       = module.spoke.spoke_vnet_id
@@ -18,7 +18,7 @@ module "hub" {
 
 #networking aks spoke
 module "spoke" {
-  source              = "../../modules/networking/spoke"
+  source              = "git::https://github.com/anujtoppoMS/aks-microservices.git//aks-microservices/terraform/modules/networking/spoke?ref=144a19375de6c0d2ba187257fea9e3f2530cc736"
   resource_group_name = module.rg["rg_aks_spoke"].name
   location            = module.rg["rg_aks_spoke"].location
   hub_vnet_id         = module.hub.hub_vnet_id
@@ -26,7 +26,7 @@ module "spoke" {
 
 # ACR attached to the AKS
 module "acr" {
-  source              = "../../modules/acr"
+  source              = "git::https://github.com/anujtoppoMS/aks-microservices.git//aks-microservices/terraform/modules/acr?ref=144a19375de6c0d2ba187257fea9e3f2530cc736"
   resource_group_name = module.rg["rg_acr"].name
   location            = module.rg["rg_acr"].location
   acr_name            = "peerisland-asses-acr"
@@ -36,7 +36,7 @@ module "acr" {
 data "azurerm_client_config" "current" {}
 
 module "keyvault" {
-  source              = "../../modules/keyvault"
+  source              = "git::https://github.com/anujtoppoMS/aks-microservices.git//aks-microservices/terraform/modules/keyvault?ref=144a19375de6c0d2ba187257fea9e3f2530cc736"
   resource_group_name = module.rg["rg_keyvault"].name
   location            = module.rg["rg_keyvault"].location
   kv_name             = "peerisland-asses-kv"
@@ -48,7 +48,7 @@ module "keyvault" {
 
 #aks module
 module "aks" {
-  source              = "../../modules/aks"
+  source              = "git::https://github.com/anujtoppoMS/aks-microservices.git//aks-microservices/terraform/modules/aks?ref=144a19375de6c0d2ba187257fea9e3f2530cc736"
   resource_group_name = module.rg["rg_aks_microservices"].name
   location            = module.rg["rg_aks_microservices"].location
   k8s_namespace       = "micro-app"
@@ -61,15 +61,15 @@ module "aks" {
 
 provider "helm" {
   kubernetes = {
-    host                   = var.kube_config_cred.host
-    client_certificate     = base64decode(var.kube_config_cred.client_certificate)
-    client_key             = base64decode(var.kube_config_cred.client_key)
-    cluster_ca_certificate = base64decode(var.kube_config_cred.cluster_ca_certificate)
+    host                   = module.aks.kube_config.host
+    client_certificate     = base64decode(module.aks.kube_config.client_certificate)
+    client_key             = base64decode(module.aks.kube_config.client_key)
+    cluster_ca_certificate = base64decode(module.aks.kube_config.cluster_ca_certificate)
   }
 }
 
 module "secretprovider" {
-  source            = "../../modules/secretprovider"
-  azure_tenant_id   = var.azure_tenant_id
+  source            = "git::https://github.com/anujtoppoMS/aks-microservices.git//aks-microservices/terraform/modules/secretprovider?ref=144a19375de6c0d2ba187257fea9e3f2530cc736"
+  azure_tenant_id   = data.azurerm_client_config.current.tenant_id
   aks_uai_client_id = module.aks.aks_uai_client_id
 }
