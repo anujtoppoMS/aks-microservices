@@ -65,6 +65,13 @@ provider "helm" {
   }
 }
 
+provider "kubernetes" {
+  host                   = data.kube_config.0.host
+  client_certificate     = base64decode(data.kube_config.0.client_certificate)
+  client_key             = base64decode(data.kube_config.0.client_key)
+  cluster_ca_certificate = base64decode(data.kube_config.0.cluster_ca_certificate)
+}
+
 module "secretprovider" {
   source            = "git::https://github.com/anujtoppoMS/aks-microservices.git//aks-microservices/terraform/modules/secretprovider?ref=144a19375de6c0d2ba187257fea9e3f2530cc736"
   azure_tenant_id   = data.azurerm_client_config.current.tenant_id
