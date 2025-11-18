@@ -59,19 +59,23 @@ module "aks" {
   keyvault_id = module.keyvault.id
 }
 
+data "azurerm_kubernetes_cluster" "aks_datasource" {
+  depends_on          = [ module.aks ]
+  name                = "datasource_aks"
+  resource_group_name = module.rg["rg_aks_microservices"].name
+}
+
 provider "helm" {
-  alias = "aks"
   kubernetes = {
-    config_raw = module.aks.kube_config_raw
+    host                   = data.azurerm_kubernetes_cluster.aks_datasource.kube_config[0].host
+    client_certificate     = base64decode(data.azurerm_kubernetes_cluster.aks_datasource.kube_config[0].client_certificate)
+    client_key             = base64decode(data.azurerm_kubernetes_cluster.aks_datasource.kube_config[0].client_key)
+    cluster_ca_certificate = base64decode(data.azurerm_kubernetes_cluster.aks_datasource.kube_config[0].cluster_ca_certificate)
   }
 }
 
 module "secretprovider" {
-  depends_on        = [module.aks]
   source            = "git::https://github.com/anujtoppoMS/aks-microservices.git//aks-microservices/terraform/modules/secretprovider?ref=main"
-  providers = {
-    helm = helm.aks
-  }
   azure_tenant_id   = data.azurerm_client_config.current.tenant_id
   aks_uai_client_id = module.aks.aks_uai_client_id
 }
