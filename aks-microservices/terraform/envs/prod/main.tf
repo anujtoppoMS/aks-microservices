@@ -59,7 +59,7 @@ module "aks" {
   keyvault_id = module.keyvault.id
 }
 
-data "azurerm_kubernetes_cluster" "aks_datasource" {
+data "azurerm_kubernetes_cluster" "aks-spoke" {
   depends_on          = [ module.aks ]
   name                = "datasource_aks"
   resource_group_name = module.rg["rg_aks_microservices"].name
