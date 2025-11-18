@@ -1,3 +1,9 @@
+provider "helm" {
+  kubernetes = {
+    config_raw = var.kube_config
+  }
+}
+
 resource "helm_release" "csi_driver" {
   name       = "csi-secrets-store"
   repository = "https://kubernetes-sigs.github.io/secrets-store-csi-driver/charts"
