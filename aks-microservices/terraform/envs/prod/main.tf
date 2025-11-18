@@ -88,4 +88,5 @@ module "secretprovider" {
     helm       = helm
     kubernetes = kubernetes
   }
+  kubeconfig = data.azurerm_kubernetes_cluster.aks-spoke.kube_config_raw
 }
