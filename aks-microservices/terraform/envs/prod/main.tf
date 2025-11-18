@@ -63,14 +63,14 @@ provider "helm" {
   kubernetes = {
     config_raw = module.aks.kube_config_raw
     exec = {
-    api_version = "client.authentication.k8s.io/v1beta1"
-    command     = "az"
-    args        = [
-      "aks", "get-credentials",
-      "--resource-group", module.rg["rg_aks_microservices"].name,
-      "--name", module.aks.aks_name,
-      "--file", "/dev/null" # prevents writing to local kubeconfig
-    ]
+      api_version = "client.authentication.k8s.io/v1beta1"
+      command     = "az"
+      args = [
+        "aks", "get-credentials",
+        "--resource-group", module.rg["rg_aks_microservices"].name,
+        "--name", module.aks.aks_name,
+        "--file", "/dev/null" # prevents writing to local kubeconfig
+      ]
     }
   }
 }
