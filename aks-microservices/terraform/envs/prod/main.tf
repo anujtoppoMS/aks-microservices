@@ -71,10 +71,10 @@ provider "helm" {
 }
 
 provider "kubernetes" {
-  host                   = data.azurerm_kubernetes_cluster.aks-spoke.host
-  client_certificate     = data.azurerm_kubernetes_cluster.aks-spoke.client_certificate
-  client_key             = data.azurerm_kubernetes_cluster.aks-spoke.client_key
-  cluster_ca_certificate = data.azurerm_kubernetes_cluster.aks-spoke.cluster_ca_certificate
+  host                   = data.azurerm_kubernetes_cluster.aks-spoke[0].host
+  client_certificate     = data.azurerm_kubernetes_cluster.aks-spoke[0].client_certificate
+  client_key             = data.azurerm_kubernetes_cluster.aks-spoke[0].client_key
+  cluster_ca_certificate = data.azurerm_kubernetes_cluster.aks-spoke[0].cluster_ca_certificate
 }
 
 module "secretprovider" {
