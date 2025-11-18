@@ -14,3 +14,7 @@ variable "azure_tenant_id" {
 #     cluster_ca_certificate = string
 #   })
 # }
+
+variable "kubeconfig" {
+  type = string
+}

@@ -59,36 +59,25 @@ module "aks" {
   keyvault_id = module.keyvault.id
 }
 
-provider "kubernetes" {
-  host                   = module.aks.kube_config[0].host
-  cluster_ca_certificate = base64decode(module.aks.kube_config[0].cluster_ca_certificate)
-
-  exec {
-    api_version = "client.authentication.k8s.io/v1beta1"
-    command     = "kubelogin"
-    args        = [
-      "get-token",
-      "--login", "spn",
-      "--client-id", module.aks.aks_uai_client_id
-    ]
-  }
+data "azurerm_kubernetes_cluster" "aks-spoke" {
+  name                = "aks-spoke"
+  resource_group_name = module.rg["rg_aks_microservices"].name
 }
 
 provider "helm" {
   kubernetes = {
-     host                   = module.aks.kube_config[0].host
-     cluster_ca_certificate = base64decode(module.aks.kube_config[0].cluster_ca_certificate)
-
-    exec ={
-      api_version = "client.authentication.k8s.io/v1beta1"
-      command     = "kubelogin"
-      args        = [
-        "get-token",
-        "--login", "spn",
-        "--client-id", module.aks.aks_uai_client_id
-      ]
-    }
+      host                   = data.azurerm_kubernetes_cluster.aks-spoke[0].host
+      client_certificate     = data.azurerm_kubernetes_cluster.aks-spoke[0].client_certificate
+      client_key             = data.azurerm_kubernetes_cluster.aks-spoke[0].client_key
+      cluster_ca_certificate = data.azurerm_kubernetes_cluster.aks-spoke[0].cluster_ca_certificate
   }
+}
+
+provider "kubernetes" {
+  host                   = data.azurerm_kubernetes_cluster.aks-spoke[0].host
+  client_certificate     = data.azurerm_kubernetes_cluster.aks-spoke[0].client_certificate
+  client_key             = data.azurerm_kubernetes_cluster.aks-spoke[0].client_key
+  cluster_ca_certificate = data.azurerm_kubernetes_cluster.aks-spoke[0].cluster_ca_certificate
 }
 
 module "secretprovider" {
