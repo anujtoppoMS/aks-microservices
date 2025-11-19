@@ -2,9 +2,7 @@ name: aks-install-csi-akv
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
+  workflow_call:
 
 permissions:
   id-token: write
@@ -12,9 +10,9 @@ permissions:
 
 env:
   AZURE_SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
-  AZURE_RESOURCE_GROUP: your-aks-rg
-  AKS_CLUSTER_NAME: your-aks-cluster
-  KEYVAULT_NAME: your-keyvault-name
+  AZURE_RESOURCE_GROUP: rg_aks_microservices
+  AKS_CLUSTER_NAME: aks-spoke
+  KEYVAULT_NAME: peerisland-asses-kv
   KEYVAULT_TENANT_ID: ${{ secrets.TENANT_ID }}
   HELM_RELEASE_PREFIX: secrets-store
 
