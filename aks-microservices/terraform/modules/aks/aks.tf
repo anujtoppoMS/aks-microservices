@@ -123,3 +123,13 @@ resource "azurerm_federated_identity_credential" "aks_sa_binding" {
   issuer   = azurerm_kubernetes_cluster.aks.oidc_issuer_url
   subject  = "system:serviceaccount:${var.k8s_namespace}:default"
 }
+
+resource "azurerm_federated_identity_credential" "aks_gh_binding" {
+  name                = "aks-gh-federated-cred"
+  resource_group_name = var.resource_group_name
+  parent_id = azurerm_user_assigned_identity.aks_uai.id
+
+  audience = ["api://AzureADTokenExchange"]
+  issuer   = "https://token.actions.githubusercontent.com"
+  subject  = "repo:anujtoppoMS/aks-microservices:environment:production"
+}
