@@ -65,8 +65,9 @@ jobs:
         working-directory: aks-microservices/app/
         run: |
           pwd
+          ls /home/runner/work/aks-microservices/aks-microservices/aks-microservices/manifests/
           # render template from repo and apply via stdin (never commit rendered file)
-          envsubst < ./manifests/secretproviderclass.tpl.yaml | kubectl apply -f -
+          envsubst < ./secretproviderclass.tpl.yaml | kubectl apply -f -
 
       - name: Wait for pods in kube-system ready
         run: |
