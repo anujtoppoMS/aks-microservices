@@ -9,7 +9,7 @@ volumes:
       driver: secrets-store.csi.k8s.io
       readOnly: true
       volumeAttributes:
-        secretProviderClass: "azure-kv-secrets"
+        secretProviderClass: "azure-kv-secrets-uami"
 # Additional volumeMounts on the output Deployment definition.
 image:
   repository: platformacr001.azurecr.io/app-gateway
