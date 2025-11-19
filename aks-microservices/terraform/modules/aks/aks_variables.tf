@@ -23,3 +23,9 @@ variable "location" {
 variable "k8s_namespace" {
   type = string
 }
+
+variable "default_node_pool_temporary_name_for_rotation" {
+  type        = string
+  description = "Temporary node pool name used during rotation when updating default node pool properties"
+  default     = null
+}

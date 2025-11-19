@@ -40,6 +40,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
     upgrade_settings {
       max_surge = "33%"
     }
+    temporary_name_for_rotation = var.default_node_pool_temporary_name_for_rotation
   }
 
   lifecycle {
