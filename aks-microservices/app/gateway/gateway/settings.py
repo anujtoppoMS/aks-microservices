@@ -28,7 +28,7 @@ DEBUG = True
 
 # ALLOWED_HOSTS = [os.open("/mnt/secrets-store/allowed-hosts").read().strip()]
 
-ALLOWED_HOSTS = ["172.212.25.96"]
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
