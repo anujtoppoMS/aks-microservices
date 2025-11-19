@@ -36,7 +36,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
     min_count                    = 1
     max_count                    = 3
     vnet_subnet_id               = var.subnet_ids["spoke_aks_subnet_id"]
-    # only_critical_addons_enabled = true
+    only_critical_addons_enabled = true
     upgrade_settings {
       max_surge = "33%"
     }
@@ -55,18 +55,18 @@ resource "azurerm_kubernetes_cluster" "aks" {
   # }
 }
 
-# resource "azurerm_kubernetes_cluster_node_pool" "usernp" {
-#   name                  = "usernp"
-#   kubernetes_cluster_id = azurerm_kubernetes_cluster.aks.id
-#   vm_size               = "Standard_D2s_v3"
+resource "azurerm_kubernetes_cluster_node_pool" "usernp" {
+  name                  = "usernp"
+  kubernetes_cluster_id = azurerm_kubernetes_cluster.aks.id
+  vm_size               = "Standard_D2s_v3"
 
-#   # Autoscaling configuration
-#   auto_scaling_enabled = true
-#   min_count           = 1
-#   max_count           = 3
-#   # Subnet assignment
-#   vnet_subnet_id = var.subnet_ids["spoke_aks_subnet_id"]
-# }
+  # Autoscaling configuration
+  auto_scaling_enabled = true
+  min_count           = 1
+  max_count           = 3
+  # Subnet assignment
+  vnet_subnet_id = var.subnet_ids["spoke_aks_subnet_id"]
+}
 
 # Role assignments for subnet permissions
 # resource "azurerm_role_assignment" "aks_subnet_contributor" {

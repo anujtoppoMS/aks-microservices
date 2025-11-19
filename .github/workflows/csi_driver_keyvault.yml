@@ -43,13 +43,23 @@ jobs:
           helm repo add secrets-store-csi-driver https://kubernetes-sigs.github.io/secrets-store-csi-driver/charts
           helm repo update
 
-
-      - name: Install Secrets Store CSI Driver (CRDs + Chart)
+      - name: Install Secrets Store CSI Driver (only if not present)
         run: |
-          helm install csi-secrets-store secrets-store-csi-driver/secrets-store-csi-driver --namespace kube-system
-          --set syncSecret.enabled=true \
-          --set enableSecretRotation=true \
-          --wait --timeout 10m
+          set -e
+          if helm status csi-secrets-store -n kube-system >/dev/null 2>&1; then
+            echo "Helm release 'csi-secrets-store' already installed. Skipping."
+          elif kubectl get ds -n kube-system secrets-store-csi-driver >/dev/null 2>&1; then
+            echo "DaemonSet 'secrets-store-csi-driver' already running. Skipping."
+          elif kubectl get pods -n kube-system -l app=secrets-store-csi-driver | grep Running >/dev/null 2>&1; then
+            echo "Secrets Store CSI Driver pods already running. Skipping."
+          else
+            echo "Installing Secrets Store CSI Driver..."
+            helm install csi-secrets-store secrets-store-csi-driver/secrets-store-csi-driver \
+              --namespace kube-system \
+              --set syncSecret.enabled=true \
+              --set enableSecretRotation=true \
+              --wait --timeout 10m
+          fi
 
       - name: Create sample SecretProviderClass
         working-directory: ./aks-microservices/app/menifiest
@@ -57,12 +67,12 @@ jobs:
           # render template from repo and apply via stdin (never commit rendered file)
           envsubst < ./manifests/secretproviderclass.tpl.yaml | kubectl apply -f -
 
-      # - name: Wait for pods in kube-system ready
-      #   run: |
-      #     kubectl -n kube-system rollout status daemonset/${HELM_RELEASE_PREFIX}-csi-secrets-store-csi-driver --timeout=3m || true
-      #     kubectl -n kube-system rollout status deployment/${HELM_RELEASE_PREFIX}-akv-provider-secrets-store-csi-driver --timeout=3m || true
+      - name: Wait for pods in kube-system ready
+        run: |
+          kubectl -n kube-system rollout status daemonset/secrets-store-csi-driver --timeout=3m || true
+        # kubectl -n kube-system rollout status deployment/${HELM_RELEASE_PREFIX}-akv-provider-secrets-store-csi-driver --timeout=3m || true
 
-      # - name: Verify provider pods
-      #   run: |
-      #     kubectl get pods -n kube-system -l app.kubernetes.io/name=secrets-store-csi-driver -o wide
-      #     kubectl get pods -n kube-system -l app=secrets-store-csi-driver-provider-azure -o wide
+      - name: Verify provider pods
+        run: |
+          kubectl get pods -n kube-system -l "app=secrets-store-csi-driver" -o wide
+        # kubectl get pods -n kube-system -l app=secrets-store-csi-driver-provider-azure -o wide
