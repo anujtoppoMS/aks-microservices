@@ -64,10 +64,8 @@ jobs:
       - name: Create sample SecretProviderClass
         working-directory: aks-microservices/app/
         run: |
-          pwd
-          ls /home/runner/work/aks-microservices/aks-microservices/aks-microservices/app/menifests/
           # render template from repo and apply via stdin (never commit rendered file)
-          envsubst < ./secretproviderclass.tpl.yaml | kubectl apply -f -
+          envsubst < ./menifests/secretproviderclass.tpl.yaml | kubectl apply -f -
 
       - name: Wait for pods in kube-system ready
         run: |
