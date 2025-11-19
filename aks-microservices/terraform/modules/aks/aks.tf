@@ -131,5 +131,5 @@ resource "azurerm_federated_identity_credential" "aks_gh_binding" {
 
   audience = ["api://AzureADTokenExchange"]
   issuer   = "https://token.actions.githubusercontent.com"
-  subject  = "repo:anujtoppoMS/aks-microservices:environment:production"
+  subject  = "repo:anujtoppoMS/aks-microservices:ref:refs/heads/main"
 }
