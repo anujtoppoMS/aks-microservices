@@ -20,5 +20,5 @@ output "tenant_id" {
 }
 
 output "aks_app_client_id" {
-  value     = module.aks.aks_uai_client_id
+  value     = module.aks.aks_app_client_id
 }
