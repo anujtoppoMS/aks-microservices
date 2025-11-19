@@ -58,35 +58,3 @@ module "aks" {
   acr_id      = module.acr.id
   keyvault_id = module.keyvault.id
 }
-
-data "azurerm_kubernetes_cluster" "aks-spoke" {
-  name                = "aks-spoke"
-  resource_group_name = module.rg["rg_aks_microservices"].name
-}
-
-provider "helm" {
-  kubernetes = {
-      host                   = data.azurerm_kubernetes_cluster.aks-spoke[0].host
-      client_certificate     = data.azurerm_kubernetes_cluster.aks-spoke[0].client_certificate
-      client_key             = data.azurerm_kubernetes_cluster.aks-spoke[0].client_key
-      cluster_ca_certificate = data.azurerm_kubernetes_cluster.aks-spoke[0].cluster_ca_certificate
-  }
-}
-
-provider "kubernetes" {
-  host                   = data.azurerm_kubernetes_cluster.aks-spoke[0].host
-  client_certificate     = data.azurerm_kubernetes_cluster.aks-spoke[0].client_certificate
-  client_key             = data.azurerm_kubernetes_cluster.aks-spoke[0].client_key
-  cluster_ca_certificate = data.azurerm_kubernetes_cluster.aks-spoke[0].cluster_ca_certificate
-}
-
-module "secretprovider" {
-  source            = "git::https://github.com/anujtoppoMS/aks-microservices.git//aks-microservices/terraform/modules/secretprovider?ref=main"
-  azure_tenant_id   = data.azurerm_client_config.current.tenant_id
-  aks_uai_client_id = module.aks.aks_uai_client_id
-  providers = {
-    helm       = helm
-    kubernetes = kubernetes
-  }
-  kubeconfig = data.azurerm_kubernetes_cluster.aks-spoke.kube_config_raw
-}

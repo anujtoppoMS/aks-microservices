@@ -1,0 +1,84 @@
+name: aks-install-csi-akv
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AZURE_SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
+  AZURE_RESOURCE_GROUP: your-aks-rg
+  AKS_CLUSTER_NAME: your-aks-cluster
+  KEYVAULT_NAME: your-keyvault-name
+  KEYVAULT_TENANT_ID: ${{ secrets.TENANT_ID }}
+  HELM_RELEASE_PREFIX: secrets-store
+
+jobs:
+  deploy-csi-akv:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Azure with OIDC
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.ACRAKS_CLIENTID }}          # optional if using federated credential
+          tenant-id: ${{ secrets.TENANT_ID }}
+          subscription-id: ${{ secrets.SUBSCRIPTION_ID }}
+          allow-no-subscriptions: true
+
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'latest'
+
+      - name: Get AKS credentials
+        run: |
+          az account set --subscription $AZURE_SUBSCRIPTION_ID
+          az aks get-credentials --resource-group $AZURE_RESOURCE_GROUP --name $AKS_CLUSTER_NAME --admin --overwrite-existing
+
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: 'latest'
+
+      - name: Add Helm repos
+        run: |
+          helm repo add secrets-store-csi-driver https://kubernetes-sigs.github.io/secrets-store-csi-driver/charts
+          helm repo add azure https://azure.github.io/secrets-store-csi-driver-provider-azure/charts
+          helm repo update
+
+      - name: Install Secrets Store CSI Driver (CRDs + Chart)
+        run: |
+          helm upgrade --install ${HELM_RELEASE_PREFIX}-csi secrets-store-csi-driver/secrets-store-csi-driver \
+            --namespace kube-system --create-namespace \
+            --set syncSecret.enabled=true \
+            --wait --timeout 10m
+
+      - name: Install Azure Key Vault Provider for Secrets Store CSI Driver
+        run: |
+          helm upgrade --install ${HELM_RELEASE_PREFIX}-akv-provider azure/secrets-store-csi-driver-provider-azure \
+            --namespace kube-system \
+            --wait --timeout 10m
+
+      - name: Create sample SecretProviderClass
+        working-directory: ./aks-microservices/app/menifiest
+        run: |
+          # render template from repo and apply via stdin (never commit rendered file)
+          envsubst < ./manifests/secretproviderclass.tpl.yaml | kubectl apply -f -
+
+      - name: Wait for pods in kube-system ready
+        run: |
+          kubectl -n kube-system rollout status daemonset/${HELM_RELEASE_PREFIX}-csi-secrets-store-csi-driver --timeout=3m || true
+          kubectl -n kube-system rollout status deployment/${HELM_RELEASE_PREFIX}-akv-provider-secrets-store-csi-driver --timeout=3m || true
+
+      - name: Verify provider pods
+        run: |
+          kubectl get pods -n kube-system -l app.kubernetes.io/name=secrets-store-csi-driver -o wide
+          kubectl get pods -n kube-system -l app=secrets-store-csi-driver-provider-azure -o wide
