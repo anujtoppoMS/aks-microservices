@@ -18,19 +18,19 @@ spec:
         prometheus.io/port: "{{ .Values.service.port }}"
         prometheus.io/path: "/metrics"
     spec:
-    {{- with .Values.volumes }}
-      volumes:
-        {{- toYaml . | nindent 8 }}
-    {{- end }}
+    # {{- with .Values.volumes }}
+    #   volumes:
+    #     {{- toYaml . | nindent 8 }}
+    # {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           ports:
             - containerPort: {{ .Values.service.targetPort }}
-        {{- with .Values.volumeMounts }}
-          volumeMounts:
-            {{- toYaml . | nindent 12 }}
-        {{- end }}
+        # {{- with .Values.volumeMounts }}
+        #   volumeMounts:
+        #     {{- toYaml . | nindent 12 }}
+        # {{- end }}
       tolerations:
 {{- range .Values.tolerations }}
         - key: {{ .key | quote }}
