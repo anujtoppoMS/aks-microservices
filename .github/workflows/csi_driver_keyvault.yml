@@ -61,6 +61,19 @@ jobs:
               --wait --timeout 10m
           fi
 
+      - name: Install Secrets provider for Azure
+        run: |
+          if kubectl get ds -n kube-system -l app=csi-secrets-store-provider-azure >/dev/null 2>&1; then
+            echo "Secret Store provider for Azure is already installed skipping"
+          else
+            kubectl -n kube-system apply -f https://raw.githubusercontent.com/Azure/secrets-store-csi-driver-provider-azure/master/deployment/provider-azure-installer.yaml
+          fi
+      
+      - name: Set environment variables
+        run: |
+          echo "UAMI_CLIENT_ID=${{ secrets.AKS_CLIENT_ID }}" >> $GITHUB_ENV
+          echo "AZURE_TENANT_ID=${{ secrets.TENANT_ID }}" >> $GITHUB_ENV    
+
       - name: Create sample SecretProviderClass
         working-directory: aks-microservices/app/
         run: |
