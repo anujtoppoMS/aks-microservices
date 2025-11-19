@@ -18,3 +18,7 @@ output "acr_name" {
 output "tenant_id" {
   value = data.azurerm_client_config.current.tenant_id
 }
+
+output "aks_app_client_id" {
+  value     = module.aks.aks_uai_client_id
+}
