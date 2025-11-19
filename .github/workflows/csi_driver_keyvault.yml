@@ -9,10 +9,6 @@ permissions:
   contents: read
 
 env:
-  AZURE_SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
-  AZURE_RESOURCE_GROUP: rg_aks_microservices
-  AKS_CLUSTER_NAME: aks-spoke
-  KEYVAULT_NAME: peerisland-asses-kv
   KEYVAULT_TENANT_ID: ${{ secrets.TENANT_ID }}
   HELM_RELEASE_PREFIX: secrets-store
 
@@ -45,21 +41,22 @@ jobs:
       - name: Add Helm repos
         run: |
           helm repo add secrets-store-csi-driver https://kubernetes-sigs.github.io/secrets-store-csi-driver/charts
-          helm repo add azure https://azure.github.io/secrets-store-csi-driver-provider-azure/charts
           helm repo update
 
       - name: Install Secrets Store CSI Driver (CRDs + Chart)
         run: |
-          helm upgrade --install ${HELM_RELEASE_PREFIX}-csi secrets-store-csi-driver/secrets-store-csi-driver \
-            --namespace kube-system --create-namespace \
-            --set syncSecret.enabled=true \
-            --wait --timeout 10m
+          helm upgrade --install ${HELM_RELEASE_PREFIX}-akv-provider \
+          secrets-store-csi-driver/csi-secrets-store-provider-azure \
+          --namespace kube-system \
+          --wait --timeout 10m
 
       - name: Install Azure Key Vault Provider for Secrets Store CSI Driver
         run: |
-          helm upgrade --install ${HELM_RELEASE_PREFIX}-akv-provider azure/secrets-store-csi-driver-provider-azure \
+          helm upgrade --install ${HELM_RELEASE_PREFIX}-akv-provider \
+            secrets-store-csi-driver/csi-secrets-store-provider-azure \
             --namespace kube-system \
             --wait --timeout 10m
+
 
       - name: Create sample SecretProviderClass
         working-directory: ./aks-microservices/app/menifiest
