@@ -21,7 +21,7 @@ jobs:
           cli_config_credentials_token: ${{ secrets.TFC_TOKEN }}
 
       - name: Terraform Init
-        run: terraform init #-backend-config="workspace=${{ github.ref_name }}"
+        run: terraform init --upgrade #-backend-config="workspace=${{ github.ref_name }}"
         working-directory: ./aks-microservices/terraform/envs/prod
 
       - name: Terraform Validate
