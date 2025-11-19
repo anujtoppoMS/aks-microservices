@@ -62,8 +62,9 @@ jobs:
           fi
 
       - name: Create sample SecretProviderClass
-        working-directory: ./aks-microservices/app/menifiest
+        working-directory: aks-microservices/app/
         run: |
+          pwd
           # render template from repo and apply via stdin (never commit rendered file)
           envsubst < ./manifests/secretproviderclass.tpl.yaml | kubectl apply -f -
 
