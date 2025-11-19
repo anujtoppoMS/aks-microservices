@@ -91,7 +91,6 @@ locals {
   roles = [
     "Network Contributor",
     "User Access Administrator",
-    "Azure Kubernetes Service Cluster User Role",
   ]
 }
 
@@ -116,11 +115,11 @@ resource "azurerm_role_assignment" "aks_kv_secrets_user" {
   principal_id         = azurerm_user_assigned_identity.aks_uai.principal_id
 }
 
-# resource "azurerm_role_assignment" "aks_gh_deploy" {
-#   scope                = var.keyvault_id
-#   role_definition_name = "Azure Kubernetes Service Cluster User Role"
-#   principal_id         = azurerm_user_assigned_identity.aks_uai.principal_id
-# }
+resource "azurerm_role_assignment" "aks_gh_deploy" {
+  scope                = azurerm_kubernetes_cluster.aks.id
+  role_definition_name = "Azure Kubernetes Service Cluster User Role"
+  principal_id         = azurerm_user_assigned_identity.aks_uai.principal_id
+}
 
 resource "azurerm_federated_identity_credential" "aks_sa_binding" {
   name                = "aks-sa-federated-cred"
