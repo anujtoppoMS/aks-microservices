@@ -23,23 +23,19 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Authenticate to Azure with OIDC
+      - name: Azure Login via OIDC
         uses: azure/login@v1
         with:
-          client-id: ${{ secrets.ACRAKS_CLIENTID }}          # optional if using federated credential
+          client-id: ${{ secrets.ACRAKS_CLIENTID }}
           tenant-id: ${{ secrets.TENANT_ID }}
           subscription-id: ${{ secrets.SUBSCRIPTION_ID }}
-          allow-no-subscriptions: true
 
-      - name: Install kubectl
-        uses: azure/setup-kubectl@v3
-        with:
-          version: 'latest'
-
-      - name: Get AKS credentials
+      - name: Set AKS Context
         run: |
-          az account set --subscription $AZURE_SUBSCRIPTION_ID
-          az aks get-credentials --resource-group $AZURE_RESOURCE_GROUP --name $AKS_CLUSTER_NAME --admin --overwrite-existing
+          az aks get-credentials \
+            --resource-group ${{ secrets.AKS_RG }} \
+            --name ${{ secrets.AKS_NAME }} \
+            --overwrite-existing
 
       - name: Install Helm
         uses: azure/setup-helm@v3
