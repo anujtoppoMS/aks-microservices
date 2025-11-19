@@ -65,7 +65,7 @@ jobs:
         working-directory: aks-microservices/app/
         run: |
           pwd
-          ls /home/runner/work/aks-microservices/aks-microservices/aks-microservices/app/manifests/
+          ls /home/runner/work/aks-microservices/aks-microservices/aks-microservices/app/menifests/
           # render template from repo and apply via stdin (never commit rendered file)
           envsubst < ./secretproviderclass.tpl.yaml | kubectl apply -f -
 
