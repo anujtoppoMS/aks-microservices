@@ -125,7 +125,7 @@ resource "azurerm_federated_identity_credential" "aks_sa_binding" {
 }
 
 resource "azurerm_federated_identity_credential" "aks_gh_binding" {
-  name                = "aks-gh-federated-cred"
+  name                = "github-aks-deploy"
   resource_group_name = var.resource_group_name
   parent_id = azurerm_user_assigned_identity.aks_uai.id
 

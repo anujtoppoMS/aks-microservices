@@ -36,7 +36,7 @@ module "acr" {
 data "azurerm_client_config" "current" {}
 
 module "keyvault" {
-  source              = "git::https://github.com/anujtoppoMS/aks-microservices.git//aks-microservices/terraform/modules/keyvault?ref=144a19375de6c0d2ba187257fea9e3f2530cc736"
+  source              = "git::https://github.com/anujtoppoMS/aks-microservices.git//aks-microservices/terraform/modules/keyvault?ref=main"
   resource_group_name = module.rg["rg_keyvault"].name
   location            = module.rg["rg_keyvault"].location
   kv_name             = "peerisland-asses-kv"
@@ -48,7 +48,7 @@ module "keyvault" {
 
 #aks module
 module "aks" {
-  source              = "git::https://github.com/anujtoppoMS/aks-microservices.git//aks-microservices/terraform/modules/aks?ref=144a19375de6c0d2ba187257fea9e3f2530cc736"
+  source              = "git::https://github.com/anujtoppoMS/aks-microservices.git//aks-microservices/terraform/modules/aks?ref=main"
   resource_group_name = module.rg["rg_aks_microservices"].name
   location            = module.rg["rg_aks_microservices"].location
   k8s_namespace       = "micro-app"
