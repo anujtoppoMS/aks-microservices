@@ -22,10 +22,10 @@ from django.http import HttpResponse
 def health_check(request):
     return HttpResponse("OK")
 urlpatterns = [
-    path('', index, name='index'),
+    # path('', index, name='index'),
     path('admin/', admin.site.urls),
     path('users/', include('users.urls')),
     path('orders/', include('orders.urls')),
     path('metrics', include('django_prometheus.urls')),
-    path('healthz/', health_check),
+    path('', health_check),
 ]
