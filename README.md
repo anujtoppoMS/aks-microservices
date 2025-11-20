@@ -45,11 +45,10 @@ This repository and associated work represent hands‑on projects and architectu
 ## 🎯 Goals
 - **Short‑term:**  
   - Deliver AKS/Terraform/CI/CD/monitoring assignment with FastAPI demo.  
-  - Benchmark FastAPI vs Django for microservice deployments.  
-  - Validate compensation/equity structures for senior leadership roles.  
+  - Microservice deployments.    
 
 - **Long‑term:**  
-  - Secure a senior platform architect role with strategic influence.  
+  - Secure a DevOps role with strategic influence.  
   - Balance technical excellence with business outcomes.  
 
 ---
